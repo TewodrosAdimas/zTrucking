@@ -1,19 +1,44 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-import axios from 'axios'; 
-import rawMockData from './data.json'; 
-import config from './config'; 
+import axios from 'axios';
+import rawMockData from './data.json';
+import config from './config';
 
-// Define the interface for data
+// Define the interface for your data
 interface Driver {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber?: string; 
-  status?: 'Active' | 'Inactive'; 
-  location?: string; 
+  phoneNumber?: string;
+  status?: 'Active' | 'Inactive';
+  location?: string;
   startDate?: string;
+}
+
+// Define the interface for JSONPlaceholder user data
+interface JsonPlaceholderUser {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
+  };
+  phone: string;
+  website: string;
+  company: {
+    name: string;
+    catchPhrase: string;
+    bs: string;
+  };
 }
 
 const App: React.FC = () => {
@@ -27,68 +52,43 @@ const App: React.FC = () => {
       setError(null);
       try {
         if (config.useMockData) {
-          // Use mock data
           const typedMockData: Driver[] = rawMockData as Driver[];
           setData(typedMockData);
         } else {
-          // Fetch data from API (JSONPlaceholder users as an example)
-          const response = await axios.get(`${config.apiBaseUrl}/users`);
-          // Map API response to our Driver interface as best as possible
-          const apiDrivers: Driver[] = response.data.map((user: any) => ({
+          const response = await axios.get<JsonPlaceholderUser[]>(`${config.apiBaseUrl}/users`);
+          const apiDrivers: Driver[] = response.data.map((user) => ({ // 'user' is now typed!
             id: user.id.toString(),
             firstName: user.name.split(' ')[0] || '',
             lastName: user.name.split(' ').slice(1).join(' ') || '',
             email: user.email,
-            phoneNumber: user.phone.split(' ')[0] || '', // Simple parse, might need refinement
-            status: 'Active', // Default status for API fetched data
-            location: user.address.city + ', ' + user.address.zipcode.split('-')[0], // Example location
-            startDate: '2023-01-01', // Example start date
+            phoneNumber: user.phone.split(' ')[0] || '',
+            status: 'Active',
+            location: user.address.city + ', ' + user.address.zipcode.split('-')[0],
+            startDate: '2023-01-01',
           }));
           setData(apiDrivers);
         }
       } catch (err) {
         console.error('Failed to fetch data:', err);
         setError('Failed to load data. Please try again.');
-        setData([]); // Clear data on error
+        setData([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Define columns for Material React Table
   const columns = useMemo<MRT_ColumnDef<Driver>[]>(
     () => [
-      {
-        accessorKey: 'firstName',
-        header: 'First Name',
-      },
-      {
-        accessorKey: 'lastName',
-        header: 'Last Name',
-      },
-      {
-        accessorKey: 'email',
-        header: 'Email',
-      },
-      {
-        accessorKey: 'phoneNumber',
-        header: 'Phone Number',
-      },
-      {
-        accessorKey: 'status',
-        header: 'Status',
-      },
-      {
-        accessorKey: 'location',
-        header: 'Location',
-      },
-      {
-        accessorKey: 'startDate',
-        header: 'Start Date',
-      },
+      { accessorKey: 'firstName', header: 'First Name' },
+      { accessorKey: 'lastName', header: 'Last Name' },
+      { accessorKey: 'email', header: 'Email' },
+      { accessorKey: 'phoneNumber', header: 'Phone Number' },
+      { accessorKey: 'status', header: 'Status' },
+      { accessorKey: 'location', header: 'Location' },
+      { accessorKey: 'startDate', header: 'Start Date' },
     ],
     [],
   );
