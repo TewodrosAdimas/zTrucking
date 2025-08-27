@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-import data from './data.json'; // Import mock data
+import rawData from './data.json'; // Rename to rawData to avoid confusion
 
-// Define the interface 
+// Define the interface for your data
 interface Driver {
   id: string;
   firstName: string;
@@ -13,6 +13,9 @@ interface Driver {
   location: string;
   startDate: string;
 }
+
+// Explicitly cast the imported data to the Driver[] type
+const data: Driver[] = rawData as Driver[];
 
 const App: React.FC = () => {
   // Define columns for Material React Table
@@ -53,6 +56,7 @@ const App: React.FC = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1>Driver Data</h1>
+      {/* Ensure the data prop also uses the typed `data` variable */}
       <MaterialReactTable columns={columns} data={data} enableColumnFilterModes />
     </div>
   );
