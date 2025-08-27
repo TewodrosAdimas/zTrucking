@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phoneNumber": "123-456-7890",
+    "status": "Active",
+    "location": "New York, NY",
+    "startDate": "2022-01-15"
+  },
+  {
+    "id": "2",
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "email": "jane.smith@example.com",
+    "phoneNumber": "098-765-4321",
+    "status": "Inactive",
+    "location": "Los Angeles, CA",
+    "startDate": "2021-03-20"
+  },
+  {
+    "id": "3",
+    "firstName": "Peter",
+    "lastName": "Jones",
+    "email": "peter.jones@example.com",
+    "phoneNumber": "111-222-3333",
+    "status": "Active",
+    "location": "Chicago, IL",
+    "startDate": "2023-06-01"
+  },
+  {
+    "id": "4",
+    "firstName": "Alice",
+    "lastName": "Brown",
+    "email": "alice.brown@example.com",
+    "phoneNumber": "444-555-6666",
+    "status": "Active",
+    "location": "Houston, TX",
+    "startDate": "2022-11-10"
+  },
+  {
+    "id": "5",
+    "firstName": "Bob",
+    "lastName": "White",
+    "email": "bob.white@example.com",
+    "phoneNumber": "777-888-9999",
+    "status": "Inactive",
+    "location": "Miami, FL",
+    "startDate": "2021-08-05"
+  }
+]
