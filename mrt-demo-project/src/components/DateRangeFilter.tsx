@@ -62,7 +62,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           selectsEnd
           startDate={startDate}
           endDate={endDate}
-          minDate={startDate || undefined} // ✅ ensures type matches
+          minDate={startDate || undefined} 
           placeholderText="End Date"
           customInput={
             <TextField
