@@ -4,7 +4,9 @@ import axios from "axios";
 import rawMockData from "./data.json";
 import config from "./config";
 import FilterPanel from "./components/FilterPanel";
+import ExportButtons from "./components/ExportButtons";
 
+// Data interfaces
 interface Driver {
   id: string;
   firstName: string;
@@ -21,16 +23,18 @@ interface JsonPlaceholderUser {
   name: string;
   username: string;
   email: string;
-  address: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-    geo: { lat: string; lng: string };
-  };
+  address: { street: string; suite: string; city: string; zipcode: string; geo: { lat: string; lng: string } };
   phone: string;
   website: string;
   company: { name: string; catchPhrase: string; bs: string };
+}
+
+// Filter state interface
+export interface FiltersState {
+  searchText: string;
+  selectedStatus: string;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 const App: React.FC = () => {
@@ -38,27 +42,24 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Phase 3: Filters state
-  const [filters, setFilters] = useState({
+  // Filters state
+  const [filters, setFilters] = useState<FiltersState>({
     searchText: "",
     selectedStatus: "",
-    startDate: null as Date | null,
-    endDate: null as Date | null,
+    startDate: null,
+    endDate: null,
   });
 
-  // Fetch data (Phase 1 & 2)
+  // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
       try {
         if (config.useMockData) {
-          const typedMockData: Driver[] = rawMockData as Driver[];
-          setData(typedMockData);
+          setData(rawMockData as Driver[]);
         } else {
-          const response = await axios.get<JsonPlaceholderUser[]>(
-            `${config.apiBaseUrl}/users`
-          );
+          const response = await axios.get<JsonPlaceholderUser[]>(`${config.apiBaseUrl}/users`);
           const apiDrivers: Driver[] = response.data.map((user) => ({
             id: user.id.toString(),
             firstName: user.name.split(" ")[0] || "",
@@ -66,14 +67,13 @@ const App: React.FC = () => {
             email: user.email,
             phoneNumber: user.phone.split(" ")[0] || "",
             status: "Active",
-            location:
-              user.address.city + ", " + user.address.zipcode.split("-")[0],
+            location: user.address.city + ", " + user.address.zipcode.split("-")[0],
             startDate: "2023-01-01",
           }));
           setData(apiDrivers);
         }
       } catch (err) {
-        console.error("Failed to fetch data:", err);
+        console.error(err);
         setError("Failed to load data. Please try again.");
         setData([]);
       } finally {
@@ -84,34 +84,20 @@ const App: React.FC = () => {
     fetchData();
   }, []);
 
-  // Phase 3: Filter change handler
-  const handleFilterChange = (filterName: string, value: any) => {
+  // Handle filter changes
+  const handleFilterChange = (filterName: keyof FiltersState, value: string | Date | null) => {
     setFilters((prev) => ({ ...prev, [filterName]: value }));
   };
 
-  // Phase 3: Apply filters to data
+  // Apply filters
   const filteredData = useMemo(() => {
     return data.filter((row) => {
-      // Text search
-      if (
-        filters.searchText &&
-        !`${row.firstName} ${row.lastName}`
-          .toLowerCase()
-          .includes(filters.searchText.toLowerCase())
-      )
-        return false;
-
-      // Dropdown filter (status)
-      if (filters.selectedStatus && row.status !== filters.selectedStatus)
-        return false;
-
-      // Date range filter
+      if (filters.searchText && !`${row.firstName} ${row.lastName}`.toLowerCase().includes(filters.searchText.toLowerCase())) return false;
+      if (filters.selectedStatus && row.status !== filters.selectedStatus) return false;
       if (filters.startDate && filters.endDate && row.startDate) {
         const rowDate = new Date(row.startDate);
-        if (rowDate < filters.startDate || rowDate > filters.endDate)
-          return false;
+        if (rowDate < filters.startDate || rowDate > filters.endDate) return false;
       }
-
       return true;
     });
   }, [data, filters]);
@@ -129,36 +115,23 @@ const App: React.FC = () => {
     []
   );
 
-  if (isLoading)
-    return (
-      <div style={{ padding: "20px" }}>
-        <h1>Loading Driver Data...</h1>
-      </div>
-    );
-  if (error)
-    return (
-      <div style={{ padding: "20px", color: "red" }}>
-        <h1>Error: {error}</h1>
-      </div>
-    );
+  if (isLoading) return <div style={{ padding: "20px" }}><h1>Loading Driver Data...</h1></div>;
+  if (error) return <div style={{ padding: "20px", color: "red" }}><h1>Error: {error}</h1></div>;
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-      }}
-    >
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "1rem" }}>
       <h1>Driver Data ({config.useMockData ? "Mock Data" : "API Data"})</h1>
-      {/* Phase 3: Detached Filter Panel */}
+
+      {/* Phase 3: Filters */}
       <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
-      <MaterialReactTable
-        columns={columns}
-        data={filteredData}
-        enableColumnFilterModes
-      />
+
+      {/* Phase 4: Export Buttons */}
+      <ExportButtons data={filteredData} />
+
+      {/* Table wrapper for PDF export */}
+      <div id="driver-table">
+        <MaterialReactTable columns={columns} data={filteredData} enableColumnFilterModes />
+      </div>
     </div>
   );
 };
