@@ -1,0 +1,14 @@
+{
+  "first_name": "ስም",
+  "last_name": "የአባት ስም",
+  "email": "ኢሜይል",
+  "phone_number": "ስልክ ቁጥር",
+  "status": "ሁኔታ",
+  "location": "አካባቢ",
+  "start_date": "የጀመረበት ቀን",
+  "loading": "የመንገድ መረጃ እየተጫነ ነው...",
+  "error_message": "መረጃው ሊጫን አልቻለም። እባኮትን ደግመው ይሞክሩ።",
+  "driver_data": "የነጋዴ መረጃ ({{source}})",
+  "mock_data": "አማራጭ መረጃ",
+  "api_data": "API መረጃ"
+}

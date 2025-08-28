@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useMemo, useState, useEffect } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import axios from "axios";
@@ -5,9 +6,11 @@ import rawMockData from "./data.json";
 import config from "./config";
 import FilterPanel from "./components/FilterPanel";
 import ExportButtons from "./components/ExportButtons";
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 // Data interfaces
-interface Driver {
+export interface Driver {
   id: string;
   firstName: string;
   lastName: string;
@@ -38,6 +41,8 @@ export interface FiltersState {
 }
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
+
   const [data, setData] = useState<Driver[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +79,7 @@ const App: React.FC = () => {
         }
       } catch (err) {
         console.error(err);
-        setError("Failed to load data. Please try again.");
+        setError(t("error_message"));
         setData([]);
       } finally {
         setIsLoading(false);
@@ -82,7 +87,7 @@ const App: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [t]);
 
   // Handle filter changes
   const handleFilterChange = (filterName: keyof FiltersState, value: string | Date | null) => {
@@ -102,30 +107,37 @@ const App: React.FC = () => {
     });
   }, [data, filters]);
 
+  // Columns with translations
   const columns = useMemo<MRT_ColumnDef<Driver>[]>(
     () => [
-      { accessorKey: "firstName", header: "First Name" },
-      { accessorKey: "lastName", header: "Last Name" },
-      { accessorKey: "email", header: "Email" },
-      { accessorKey: "phoneNumber", header: "Phone Number" },
-      { accessorKey: "status", header: "Status" },
-      { accessorKey: "location", header: "Location" },
-      { accessorKey: "startDate", header: "Start Date" },
+      { accessorKey: "firstName", header: t("first_name") },
+      { accessorKey: "lastName", header: t("last_name") },
+      { accessorKey: "email", header: t("email") },
+      { accessorKey: "phoneNumber", header: t("phone_number") },
+      { accessorKey: "status", header: t("status") },
+      { accessorKey: "location", header: t("location") },
+      { accessorKey: "startDate", header: t("start_date") },
     ],
-    []
+    [t]
   );
 
-  if (isLoading) return <div style={{ padding: "20px" }}><h1>Loading Driver Data...</h1></div>;
-  if (error) return <div style={{ padding: "20px", color: "red" }}><h1>Error: {error}</h1></div>;
+  if (isLoading) return <div style={{ padding: "20px" }}><h1>{t("loading")}</h1></div>;
+  if (error) return <div style={{ padding: "20px", color: "red" }}><h1>{t("error_message")}</h1></div>;
 
   return (
-    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <h1>Driver Data ({config.useMockData ? "Mock Data" : "API Data"})</h1>
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "1rem", overflow: "visible" }}>
+      {/* Header with Language Switcher */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+        <h1 style={{ margin: 0 }}>
+          {t("driver_data", { source: config.useMockData ? t("mock_data") : t("api_data") })}
+        </h1>
+        <LanguageSwitcher />
+      </div>
 
-      {/* Phase 3: Filters */}
+      {/* Filters */}
       <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
 
-      {/* Phase 4: Export Buttons */}
+      {/* Export Buttons */}
       <ExportButtons data={filteredData} />
 
       {/* Table wrapper for PDF export */}

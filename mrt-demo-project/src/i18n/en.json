@@ -1,0 +1,14 @@
+{
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "email": "Email",
+  "phone_number": "Phone Number",
+  "status": "Status",
+  "location": "Location",
+  "start_date": "Start Date",
+  "loading": "Loading Driver Data...",
+  "error_message": "Failed to load data. Please try again.",
+  "driver_data": "Driver Data ({{source}})",
+  "mock_data": "Mock Data",
+  "api_data": "API Data"
+}
