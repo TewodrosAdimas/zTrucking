@@ -1,4 +1,3 @@
-// src/components/FilterPanel.tsx
 import React from "react";
 import Box from "@mui/material/Box";
 import TextSearchFilter from "./TextSearchFilter";
@@ -19,16 +18,13 @@ interface FilterPanelProps {
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChange }) => {
+
   return (
     <Box
       sx={{
         display: "flex",
         flexWrap: "wrap",
         gap: 2,
-        padding: 2,
-        border: "1px solid #ccc",
-        borderRadius: 2,
-        backgroundColor: "#f9f9f9",
       }}
     >
       {/* Text search filter */}

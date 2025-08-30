@@ -26,7 +26,7 @@ const DropdownFilter: React.FC<DropdownFilterProps> = ({ label, options, value, 
         label={label}
         renderValue={isMulti ? (selected) => (selected as string[]).join(', ') : undefined}
       >
-        {!isMulti && <MenuItem value=""><em>None</em></MenuItem>} {/* Option for single select to clear */}
+        {!isMulti && <MenuItem value=""><em></em></MenuItem>} {/* Option for single select to clear */}
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}

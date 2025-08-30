@@ -1,5 +1,3 @@
-// src/filtersConfig.ts
-
 export type FilterType = 'text' | 'dropdown' | 'dateRange';
 
 export interface FilterOption {
@@ -42,7 +40,6 @@ export const filtersConfig: FilterConfig[] = [
     options: [
       { value: 'Active', label: 'Active' },
       { value: 'Inactive', label: 'Inactive' },
-      // Add other statuses if they appear in your data
     ],
     defaultValue: '', // Start with no selection or a default
   },

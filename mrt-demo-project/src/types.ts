@@ -1,4 +1,3 @@
-// src/types.ts
 export interface Driver {
   id: string;
   firstName: string;
