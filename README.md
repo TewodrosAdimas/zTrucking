@@ -41,8 +41,8 @@ A modern, responsive, and dynamic React-based web application built for the truc
 ## 🚀 Installation
 
 ```bash
-git clone <repository-url>
-cd project-name
+git clone (https://github.com/TewodrosAdimas/zTrucking)
+cd zTrucking
 npm install
 npm start
 ```
